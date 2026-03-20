@@ -11,6 +11,7 @@ The backend is deployed on Render's free tier. If the API feels slow on first lo
 Coaches can register a new account or log in with an existing one. JWT token is stored in localStorage and attached to every API request. Unauthorized users are redirected to the login page automatically.
 
 ![Login Page](./screenshots/login.png)
+![Register Page](./screenshots/register.png)
 
 ---
 
