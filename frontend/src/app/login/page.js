@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 
@@ -36,6 +36,10 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
+
+   useEffect(() => {
+    fetch('https://coachassist.onrender.com/').catch(() => {})
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
