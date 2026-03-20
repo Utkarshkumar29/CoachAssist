@@ -2,6 +2,10 @@
 
 A CRM built for wellness coaches to track leads, log interactions, and generate AI-powered follow-ups using Google Gemini. Built as a full-stack assignment using Next.js, Express, MongoDB, and Redis.
 
+## ⚠️ Note on Backend
+
+The backend is deployed on Render's free tier. If the API feels slow on first load, please wait **60-90 seconds** for the server to wake up. This is a Render cold start — subsequent requests will be fast.
+
 ---
 
 ## What it does
