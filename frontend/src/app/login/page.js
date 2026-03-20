@@ -92,7 +92,7 @@ export default function LoginPage() {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+            className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-lg px-4 py-3 text-sm font-medium transition-colors cursor-pointer"
           >
             {loading ? 'Please wait...' : isLogin ? 'Sign in' : 'Create account'}
           </button>
@@ -102,7 +102,7 @@ export default function LoginPage() {
           {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
           <button
             onClick={() => { setIsLogin(!isLogin); setError('') }}
-            className="text-blue-400 hover:text-blue-300"
+            className="text-blue-400 hover:text-blue-300 cursor-pointer"
           >
             {isLogin ? 'Sign up' : 'Sign in'}
           </button>

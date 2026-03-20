@@ -12,6 +12,8 @@ export default function LeadDetailPage() {
   const [aiLoading, setAiLoading] = useState(false)
   const [error, setError] = useState('')
   const [newStatus, setNewStatus] = useState('')
+  const [activityForm, setActivityForm] = useState({ type: 'CALL', meta: '' })
+  const [showActivityForm, setShowActivityForm] = useState(false)
 
   useEffect(() => { fetchLead(); fetchTimeline() }, [])
 
@@ -32,6 +34,19 @@ export default function LeadDetailPage() {
       body: JSON.stringify({ status: newStatus })
     })
     fetchLead()
+  }
+
+  const logActivity = async () => {
+    await apiFetch(`/leads/${id}/activity`, {
+      method: 'POST',
+      body: JSON.stringify({
+        type: activityForm.type,
+        meta: { note: activityForm.meta }
+      })
+    })
+    setShowActivityForm(false)
+    setActivityForm({ type: 'CALL', meta: '' })
+    fetchTimeline()
   }
 
   const generateAI = async () => {
@@ -69,7 +84,6 @@ export default function LeadDetailPage() {
     <div className="min-h-screen bg-gray-950 p-6">
       <div className="max-w-4xl mx-auto">
 
-        {/* Header */}
         <button onClick={() => router.push('/leads')} className="text-gray-400 hover:text-white text-sm mb-6 block">← Back to Leads</button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -116,7 +130,7 @@ export default function LeadDetailPage() {
             <button
               onClick={generateAI}
               disabled={aiLoading}
-              className="bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm"
+              className="bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm cursor-pointer"
             >
               {aiLoading ? 'Generating...' : '✨ Generate Follow-up'}
             </button>
@@ -150,20 +164,55 @@ export default function LeadDetailPage() {
 
         {/* Timeline */}
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h2 className="text-white font-medium mb-4">Activity Timeline</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-white font-medium">Activity Timeline</h2>
+            <button
+              onClick={() => setShowActivityForm(!showActivityForm)}
+              className="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1 rounded-lg text-sm cursor-pointer"
+            >
+              + Log Activity
+            </button>
+          </div>
+
+          {showActivityForm && (
+            <div className="bg-gray-800 rounded-lg p-4 mb-4 flex gap-3">
+              <select
+                value={activityForm.type}
+                onChange={e => setActivityForm({ ...activityForm, type: e.target.value })}
+                className="bg-gray-700 text-white rounded-lg px-3 py-2 text-sm border border-gray-600"
+              >
+                {['CALL','WHATSAPP','NOTE','STATUS_CHANGE'].map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+              <input
+                placeholder="Add a note..."
+                value={activityForm.meta}
+                onChange={e => setActivityForm({ ...activityForm, meta: e.target.value })}
+                className="bg-gray-700 text-white rounded-lg px-3 py-2 text-sm border border-gray-600 flex-1"
+              />
+              <button onClick={logActivity} className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm">
+                Save
+              </button>
+            </div>
+          )}
+
           {timeline.length === 0 ? (
             <p className="text-gray-500 text-sm">No activities yet.</p>
           ) : (
             <div className="space-y-3">
               {timeline.map(activity => (
-                <div key={activity._id} className="flex gap-3 items-start">
+                <div key={activity._id} className="flex gap-3 items-start border-b border-gray-800 pb-3">
                   <span className="text-xl">{activityIcons[activity.type]}</span>
-                  <div>
-                    <p className="text-white text-sm font-medium">{activity.type.replace('_', ' ')}</p>
-                    <p className="text-gray-400 text-xs">{new Date(activity.createdAt).toLocaleString()}</p>
+                  <div className="flex-1">
+                    <p className="text-white text-sm font-medium">{activity.type.replace(/_/g, ' ')}</p>
+                    {activity.meta?.note && (
+                      <p className="text-gray-300 text-xs mt-1">{activity.meta.note}</p>
+                    )}
                     {activity.meta?.output && (
                       <p className="text-gray-300 text-xs mt-1">AI message generated</p>
                     )}
+                    <p className="text-gray-500 text-xs mt-1">{new Date(activity.createdAt).toLocaleString()}</p>
                   </div>
                 </div>
               ))}

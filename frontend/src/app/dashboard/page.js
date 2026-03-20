@@ -36,13 +36,13 @@ export default function DashboardPage() {
           <div className="flex gap-3">
             <button
               onClick={() => router.push('/leads')}
-              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm"
+              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm cursor-pointer"
             >
               Manage Leads
             </button>
             <button
               onClick={() => { localStorage.removeItem('token'); router.push('/login') }}
-              className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm"
+              className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm cursor-pointer"
             >
               Logout
             </button>
@@ -79,15 +79,21 @@ export default function DashboardPage() {
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
           <p className="text-white font-medium mb-4">7-Day Activity</p>
           <div className="flex items-end gap-2 h-32">
-            {data?.activityGraph?.map(day => (
-              <div key={day._id} className="flex-1 flex flex-col items-center gap-1">
-                <div
-                  className="w-full bg-blue-600 rounded-t"
-                  style={{ height: `${Math.min(day.count * 20, 100)}%` }}
-                />
-                <p className="text-gray-500 text-xs">{day._id.slice(5)}</p>
+            {data?.activityGraph?.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500 text-sm">No activity in the last 7 days</p>
               </div>
-            ))}
+            ) : (
+              data?.activityGraph?.map(day => (
+                <div key={day._id} className="flex-1 flex flex-col items-center gap-1">
+                  <div
+                    className="w-full bg-blue-600 rounded-t"
+                    style={{ height: `${Math.min(day.count * 20, 100)}%` }}
+                  />
+                  <p className="text-gray-500 text-xs">{day._id.slice(5)}</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

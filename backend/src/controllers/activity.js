@@ -32,3 +32,19 @@ export const getTimeline = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' })
   }
 }
+
+export const addActivity = async (req, res) => {
+  try {
+    const { type, meta } = req.body
+    const activity = await Activity.create({
+      lead: req.params.id,
+      type,
+      meta,
+      createdBy: req.user.id
+    })
+    res.status(201).json({ activity })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
