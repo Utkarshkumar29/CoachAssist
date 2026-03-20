@@ -79,20 +79,24 @@ export default function DashboardPage() {
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
           <p className="text-white font-medium mb-4">7-Day Activity</p>
           <div className="flex items-end gap-2 h-32">
-            {data?.activityGraph?.length === 0 ? (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500 text-sm">No activity in the last 7 days</p>
-              </div>
+            {!data?.activityGraph?.length ? (
+              <p className="text-gray-500 text-sm">No activity in the last 7 days</p>
             ) : (
-              data?.activityGraph?.map(day => (
-                <div key={day._id} className="flex-1 flex flex-col items-center gap-1">
-                  <div
-                    className="w-full bg-blue-600 rounded-t"
-                    style={{ height: `${Math.min(day.count * 20, 100)}%` }}
-                  />
-                  <p className="text-gray-500 text-xs">{day._id.slice(5)}</p>
-                </div>
-              ))
+              <div className="flex items-end gap-2" style={{ height: '120px' }}>
+                {data.activityGraph.map(day => {
+                  const maxCount = Math.max(...data.activityGraph.map(d => d.count))
+                  const heightPx = Math.max((day.count / maxCount) * 120, 6)
+                  return (
+                    <div key={day._id} className="flex-1 flex flex-col items-center gap-1">
+                      <div
+                        className="w-full bg-blue-600 rounded-t transition-all"
+                        style={{ height: `${heightPx}px` }}
+                      />
+                      <p className="text-gray-500 text-xs">{day._id.slice(5)}</p>
+                    </div>
+                  )
+                })}
+              </div>
             )}
           </div>
         </div>
